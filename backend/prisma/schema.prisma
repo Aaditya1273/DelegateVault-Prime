@@ -1,0 +1,173 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Vault {
+  id              String   @id @default(uuid())
+  address         String   @unique
+  chainId         Int
+  name            String
+  assetSymbol     String
+  underlying      String?
+  owner           String
+  tvl             String?
+  totalShares     String?
+  totalAssets     String?
+  feeBps          Int?
+  paused          Boolean  @default(false)
+  performanceAPY  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  positions       Position[]
+  events          VaultEvent[]
+  delegations     Delegation[]
+  aiStrategies    AIStrategy[]
+  circleMembers   CircleMember[]
+  circle          Circle?
+}
+
+model Position {
+  id              String   @id @default(uuid())
+  vaultId         String
+  vault           Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+  userAddress     String
+  shares          String
+  assets          String
+  entryPrice      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([vaultId, userAddress])
+  @@index([userAddress])
+}
+
+model Delegation {
+  id              String   @id @default(uuid())
+  vaultId         String
+  vault           Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+  vaultOwner      String
+  delegate        String
+  expiresAt       DateTime
+  zkProof         String?
+  signature       String?
+  nonce           String?
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([vaultOwner])
+  @@index([delegate])
+}
+
+model VaultEvent {
+  id              String   @id @default(uuid())
+  vaultId         String
+  vault           Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+  eventType       String
+  blockNumber     String
+  transactionHash String
+  logIndex        Int
+  data            String
+  createdAt       DateTime @default(now())
+  
+  @@unique([transactionHash, logIndex])
+  @@index([vaultId])
+}
+
+model User {
+  id              String   @id @default(uuid())
+  address         String   @unique
+  username        String?
+  email           String?
+  farcasterFid    String?
+  nftBadges       String?
+  streakDays      Int      @default(0)
+  totalPoints     Int      @default(0)
+  tier            String   @default("free")
+  referralCode    String?  @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  circleMembers   CircleMember[]
+  aiPreferences   AIPreference?
+  referrals       Referral[] @relation("Referrer")
+}
+
+model Circle {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  vaultId         String   @unique
+  vault           Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+  competitionMode Boolean  @default(false)
+  totalMembers    Int      @default(0)
+  ranking         Int?
+  performanceAPY  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  members         CircleMember[]
+}
+
+model CircleMember {
+  id              String   @id @default(uuid())
+  circleId        String
+  circle          Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vaultId         String
+  vault           Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+  role            String   @default("member")
+  joinedAt        DateTime @default(now())
+  
+  @@unique([circleId, userId])
+  @@index([userId])
+}
+
+model AIStrategy {
+  id              String   @id @default(uuid())
+  vaultId         String
+  vault           Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+  strategyType    String
+  parameters      String
+  active          Boolean  @default(true)
+  performance     String?
+  reasoningTrail  String?
+  lastExecuted    DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([vaultId])
+}
+
+model AIPreference {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  riskTolerance   String   @default("medium")
+  autoRebalance   Boolean  @default(true)
+  maxSlippage     String   @default("0.5")
+  preferences     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Referral {
+  id              String   @id @default(uuid())
+  referrerId      String
+  referrer        User     @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referredAddress String
+  rewardPoints    Int      @default(100)
+  createdAt       DateTime @default(now())
+  
+  @@index([referrerId])
+}
