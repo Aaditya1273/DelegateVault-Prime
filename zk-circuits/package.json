@@ -1,0 +1,20 @@
+{
+  "name": "delegatevault-zk-circuits",
+  "version": "1.0.0",
+  "description": "Zero-Knowledge Proof Circuits for DelegateVault",
+  "scripts": {
+    "compile": "node scripts/compile.js",
+    "setup": "node scripts/setup.js",
+    "generate-proof": "node scripts/generate-proof.js",
+    "verify-proof": "node scripts/verify-proof.js",
+    "export-verifier": "node scripts/export-verifier.js"
+  },
+  "dependencies": {
+    "circomlib": "^2.0.5",
+    "snarkjs": "^0.7.3",
+    "ffjavascript": "^0.3.0"
+  },
+  "devDependencies": {
+    "circom_tester": "^0.0.19"
+  }
+}
