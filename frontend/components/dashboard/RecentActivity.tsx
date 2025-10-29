@@ -40,16 +40,16 @@ export default function RecentActivity() {
   ];
 
   return (
-    <GlassCard className="p-6">
-      <h3 className="text-xl font-bold mb-6">Recent Activity</h3>
+    <div className="backdrop-blur-xl bg-gradient-to-br from-gray-800/30 via-gray-900/50 to-black/70 border-2 border-amber-800/40 rounded-2xl p-6">
+      <h3 className="text-xl font-bold mb-6 bg-gradient-to-r from-amber-300 to-amber-600 bg-clip-text text-transparent">Recent Activity</h3>
       <div className="space-y-4">
         {activities.map((activity, index) => (
-          <div key={index} className="flex items-center space-x-4 p-3 rounded-xl glass-hover cursor-pointer group">
-            <div className="w-10 h-10 rounded-xl glass flex items-center justify-center group-hover:scale-110 transition-transform">
+          <div key={index} className="flex items-center space-x-4 p-3 rounded-xl backdrop-blur-sm bg-white/5 hover:bg-white/10 border border-amber-900/20 hover:border-amber-700/40 transition-all cursor-pointer group">
+            <div className="w-10 h-10 rounded-xl backdrop-blur-sm bg-white/10 border border-amber-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
               {activity.icon}
             </div>
             <div className="flex-1">
-              <div className="font-semibold mb-1">{activity.title}</div>
+              <div className="font-semibold mb-1 text-white">{activity.title}</div>
               <div className="text-sm text-gray-400">{activity.time}</div>
             </div>
             <div className={`font-bold ${activity.color}`}>
@@ -58,6 +58,6 @@ export default function RecentActivity() {
           </div>
         ))}
       </div>
-    </GlassCard>
+    </div>
   );
 }

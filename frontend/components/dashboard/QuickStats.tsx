@@ -12,21 +12,21 @@ export default function QuickStats() {
   ];
 
   return (
-    <GlassCard className="p-6">
-      <h3 className="text-xl font-bold mb-6">Quick Stats</h3>
+    <div className="backdrop-blur-xl bg-gradient-to-br from-gray-800/30 via-gray-900/50 to-black/70 border-2 border-amber-800/40 rounded-2xl p-6">
+      <h3 className="text-xl font-bold mb-6 bg-gradient-to-r from-amber-300 to-amber-600 bg-clip-text text-transparent">Quick Stats</h3>
       <div className="space-y-4">
         {stats.map((stat, index) => (
-          <div key={index} className="flex items-center justify-between p-3 rounded-xl glass-hover">
+          <div key={index} className="flex items-center justify-between p-3 rounded-xl backdrop-blur-sm bg-white/5 hover:bg-white/10 border border-amber-900/20 hover:border-amber-700/40 transition-all">
             <div className="flex items-center space-x-3">
               <div className={`${stat.color}`}>
                 {stat.icon}
               </div>
               <span className="text-gray-400">{stat.label}</span>
             </div>
-            <span className="font-bold">{stat.value}</span>
+            <span className="font-bold text-white">{stat.value}</span>
           </div>
         ))}
       </div>
-    </GlassCard>
+    </div>
   );
 }

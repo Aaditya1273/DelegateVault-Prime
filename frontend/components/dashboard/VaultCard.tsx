@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Shield, Zap, ArrowRight } from 'lucide-react';
 import GlassCard from '@/components/ui/GlassCard';
+import { useRouter } from 'next/navigation';
 
 interface VaultCardProps {
   vault: {
@@ -18,6 +19,7 @@ interface VaultCardProps {
 }
 
 export default function VaultCard({ vault }: VaultCardProps) {
+  const router = useRouter();
   const getRiskColor = (risk: string) => {
     switch (risk) {
       case 'low': return 'from-green-500 to-emerald-500';
@@ -38,7 +40,7 @@ export default function VaultCard({ vault }: VaultCardProps) {
 
   return (
     <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
-      <GlassCard className="p-6 relative overflow-hidden group cursor-pointer">
+      <div className="backdrop-blur-xl bg-gradient-to-br from-gray-800/30 via-gray-900/50 to-black/70 border-2 border-amber-800/40 rounded-2xl p-6 relative overflow-hidden group cursor-pointer hover:border-amber-600/60 transition-all hover:shadow-2xl hover:shadow-amber-900/30">
         {/* Background Gradient */}
         <div className={`absolute inset-0 bg-gradient-to-br ${getRiskColor(vault.risk)} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
         
@@ -47,7 +49,7 @@ export default function VaultCard({ vault }: VaultCardProps) {
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
               <div className="flex items-center space-x-2 mb-2">
-                <h3 className="text-xl font-bold">{vault.name}</h3>
+                <h3 className="text-xl font-bold text-white">{vault.name}</h3>
                 <span className={`px-2 py-1 rounded-lg text-xs font-semibold border ${getRiskBadgeColor(vault.risk)}`}>
                   {vault.risk.toUpperCase()}
                 </span>
@@ -58,7 +60,7 @@ export default function VaultCard({ vault }: VaultCardProps) {
               </p>
             </div>
             
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getRiskColor(vault.risk)} flex items-center justify-center`}>
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getRiskColor(vault.risk)} flex items-center justify-center border-2 border-amber-700/30`}>
               <Shield className="w-6 h-6 text-white" />
             </div>
           </div>
@@ -67,7 +69,7 @@ export default function VaultCard({ vault }: VaultCardProps) {
           <div className="mb-4">
             <div className="text-sm text-gray-400 mb-1">Current APY</div>
             <div className="flex items-baseline space-x-2">
-              <span className="text-4xl font-bold gradient-text-blue">{vault.apy}%</span>
+              <span className="text-4xl font-bold bg-gradient-to-r from-amber-300 to-amber-600 bg-clip-text text-transparent">{vault.apy}%</span>
               <div className={`flex items-center space-x-1 text-sm font-semibold ${vault.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                 {vault.change24h >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                 <span>{Math.abs(vault.change24h)}%</span>
@@ -79,11 +81,11 @@ export default function VaultCard({ vault }: VaultCardProps) {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <div className="text-xs text-gray-400 mb-1">Your Balance</div>
-              <div className="text-lg font-bold">${vault.balance.toLocaleString()}</div>
+              <div className="text-lg font-bold text-white">${vault.balance.toLocaleString()}</div>
             </div>
             <div>
               <div className="text-xs text-gray-400 mb-1">Total TVL</div>
-              <div className="text-lg font-bold">${vault.tvl.toLocaleString()}</div>
+              <div className="text-lg font-bold text-white">${vault.tvl.toLocaleString()}</div>
             </div>
           </div>
 
@@ -91,13 +93,14 @@ export default function VaultCard({ vault }: VaultCardProps) {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full btn-glass flex items-center justify-center space-x-2 group"
+            onClick={() => router.push(`/vaults/${vault.id}`)}
+            className="w-full px-6 py-3 rounded-lg backdrop-blur-sm bg-white/5 hover:bg-white/10 border border-amber-800/30 hover:border-amber-700/50 transition-all flex items-center justify-center space-x-2 group font-medium"
           >
             <span>Manage Vault</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </motion.button>
         </div>
-      </GlassCard>
+      </div>
     </motion.div>
   );
 }
